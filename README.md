@@ -37,12 +37,14 @@ The files that will be synced are:
 
 
 
-# Task 4.5 Training Logs
+#**Task 4.5 Training Logs**
 
-## **Sentiment**
+**MNIST**
+- 16/16 across 51 epochs**; [mnist.txt](./mnist.txt)
+
+**Sentiment**
 - 75.00% across 120 epochs; [sentiment.txt](./sentiment.txt)
 
-## **MNIST**
-- 16/16 across 51 epochs**; [mnist.txt](./mnist.txt)
+
 
 
