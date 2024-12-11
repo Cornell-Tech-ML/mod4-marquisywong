@@ -1,9 +1,9 @@
 import random
 
 import embeddings
+from datasets import load_dataset
 
 import minitorch
-from datasets import load_dataset
 
 BACKEND = minitorch.TensorBackend(minitorch.FastOps)
 
@@ -34,8 +34,8 @@ class Conv1d(minitorch.Module):
         self.bias = RParam(1, out_channels, 1)
 
     def forward(self, input):
-        # TODO: Implement for Task 4.5.
-        raise NotImplementedError("Need to implement for Task 4.5")
+        output = minitorch.conv1d(input, self.weights.value)
+        return output + self.bias.value
 
 
 class CNNSentimentKim(minitorch.Module):
@@ -61,15 +61,34 @@ class CNNSentimentKim(minitorch.Module):
     ):
         super().__init__()
         self.feature_map_size = feature_map_size
-        # TODO: Implement for Task 4.5.
-        raise NotImplementedError("Need to implement for Task 4.5")
+        self.conv1 = Conv1d(embedding_size, feature_map_size, filter_sizes[0])
+        self.conv2 = Conv1d(embedding_size, feature_map_size, filter_sizes[1])
+        self.conv3 = Conv1d(embedding_size, feature_map_size, filter_sizes[2])
+
+        self.linear = Linear(feature_map_size, 1)
+        self.dropout = dropout
 
     def forward(self, embeddings):
         """
         embeddings tensor: [batch x sentence length x embedding dim]
         """
-        # TODO: Implement for Task 4.5.
-        raise NotImplementedError("Need to implement for Task 4.5")
+        inp_tensor = embeddings.permute(0, 2, 1)
+
+        conv_1 = self.conv1.forward(inp_tensor).relu()
+        conv_2 = self.conv2.forward(inp_tensor).relu()
+        conv_3 = self.conv3.forward(inp_tensor).relu()
+
+        max1 = minitorch.max(conv_1, dim=2)
+        max2 = minitorch.max(conv_2, dim=2)
+        max3 = minitorch.max(conv_3, dim=2)
+
+        allmax = max1 + max2 + max3
+        allmax = allmax.view(allmax.shape[0], allmax.shape[1])
+
+        x = self.linear.forward(allmax)
+        x = minitorch.dropout(x, self.dropout, not self.training)
+
+        return x.sigmoid().view(embeddings.shape[0])
 
 
 # Evaluation helper methods
@@ -256,7 +275,7 @@ if __name__ == "__main__":
     train_size = 450
     validation_size = 100
     learning_rate = 0.01
-    max_epochs = 250
+    max_epochs = 50
 
     (X_train, y_train), (X_val, y_val) = encode_sentiment_data(
         load_dataset("glue", "sst2"),
