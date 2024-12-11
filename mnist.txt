@@ -179,7 +179,7 @@ Epoch 3 loss 1.0807448820770196 valid acc 15/16
 Epoch 3 loss 1.1824710422246698 valid acc 15/16
 ^Z
 zsh: suspended  python project/run_mnist_multiclass.py
-(.venv) marquiswong@whale mod4-marquisywong % python project/run_sentiment.py       
+(.venv) marquiswong@whale mod4-marquisywong % python project/run_sentiment.py
 missing pre-trained embedding for 55 unknown words
 Epoch 1, loss 31.269648351880154, train accuracy: 52.00%
 Validation accuracy: 63.00%
@@ -200,7 +200,7 @@ Total 5 (delta 4), reused 0 (delta 0), pack-reused 0
 remote: Resolving deltas: 100% (4/4), completed with 4 local objects.
 To github.com:Cornell-Tech-ML/mod4-marquisywong.git
    4c0bf8f..4439a70  master -> master
-(.venv) marquiswong@whale mod4-marquisywong % python project/run_sentiment.py       
+(.venv) marquiswong@whale mod4-marquisywong % python project/run_sentiment.py
 ^Z
 zsh: suspended  python project/run_sentiment.py
 (.venv) marquiswong@whale mod4-marquisywong % python project/run_mnist_multiclass.py

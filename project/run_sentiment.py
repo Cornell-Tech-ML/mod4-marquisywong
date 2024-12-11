@@ -65,7 +65,6 @@ class CNNSentimentKim(minitorch.Module):
         self.conv2 = Conv1d(embedding_size, feature_map_size, filter_sizes[1])
         self.conv3 = Conv1d(embedding_size, feature_map_size, filter_sizes[2])
 
-
         self.linear = Linear(feature_map_size, 1)
         self.dropout = dropout
 
@@ -82,7 +81,7 @@ class CNNSentimentKim(minitorch.Module):
         max1 = minitorch.max(conv_1, dim=2)
         max2 = minitorch.max(conv_2, dim=2)
         max3 = minitorch.max(conv_3, dim=2)
-        
+
         allmax = max1 + max2 + max3
         allmax = allmax.view(allmax.shape[0], allmax.shape[1])
 

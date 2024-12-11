@@ -66,7 +66,6 @@ class Network(minitorch.Module):
         self.mid = None
         self.out = None
 
-
         self.conv1 = Conv2d(1, 4, 3, 3)
         self.conv2 = Conv2d(4, 8, 3, 3)
 

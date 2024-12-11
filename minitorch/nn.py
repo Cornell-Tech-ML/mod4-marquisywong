@@ -18,6 +18,7 @@ max_reduce = FastOps.reduce(operators.max, -1e9)
 # - maxpool2d: Tiled max pooling 2D
 # - dropout: Dropout positions based on random noise, include an argument to turn off
 
+
 def tile(input: Tensor, kernel: Tuple[int, int]) -> Tuple[Tensor, int, int]:
     """Reshape an image tensor for 2D pooling
 
@@ -36,22 +37,16 @@ def tile(input: Tensor, kernel: Tuple[int, int]) -> Tuple[Tensor, int, int]:
     assert height % kh == 0
     assert width % kw == 0
 
-    
     if not input._tensor.is_contiguous():
-            input = input.contiguous()
+        input = input.contiguous()
 
-
-    #shape into kernel, split height and width
+    # shape into kernel, split height and width
     n_input = input.view(batch, channel, height // kh, kh, width // kw, kw)
     n_input = n_input.permute(0, 1, 2, 4, 3, 5).contiguous()
 
-
-    tile_input = n_input.view(
-        batch, channel, height // kh, width // kw, kh * kw
-    )
+    tile_input = n_input.view(batch, channel, height // kh, width // kw, kh * kw)
 
     return tile_input, int(height // kh), int(width // kw)
-
 
 
 def avgpool2d(input: Tensor, kernel: Tuple[int, int]) -> Tensor:
@@ -69,14 +64,10 @@ def avgpool2d(input: Tensor, kernel: Tuple[int, int]) -> Tensor:
     """
     batch, channel, _, _ = input.shape
 
-
     result = tile(input, kernel)
     output = result[0].mean(4)
 
-
     return output.view(batch, channel, result[1], result[2])
-
-
 
 
 def argmax(input: Tensor, dim: int) -> Tensor:
@@ -94,6 +85,7 @@ def argmax(input: Tensor, dim: int) -> Tensor:
     """
     return input == max_reduce(input, dim)
 
+
 class Max(Function):
     @staticmethod
     def forward(ctx: Context, input: Tensor, dim: Tensor) -> Tensor:
@@ -108,7 +100,7 @@ class Max(Function):
         input, old_result = ctx.saved_values
         result = (input == old_result) * grad_output
         return result, 0.0
-    
+
 
 def max(input: Tensor, dim: int) -> Tensor:
     """Apply max reduction to the input tensor given dimension."""
@@ -151,7 +143,7 @@ def logsoftmax(input: Tensor, dim: int) -> Tensor:
     input_exp = (input - mx).exp()
     sum_exp = input_exp.sum(dim=dim)
     log_sum_exp = sum_exp.log() + mx
-    return input - log_sum_exp  
+    return input - log_sum_exp
 
 
 def maxpool2d(input: Tensor, kernel: Tuple[int, int]) -> Tensor:
@@ -191,5 +183,5 @@ def dropout(input: Tensor, p: float, ignore: bool = False) -> Tensor:
         level = prob_drop > p
 
         return input * level
-    
+
     return input
